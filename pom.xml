@@ -176,7 +176,7 @@
 								<artifactItem>
 									<groupId>org.gnu.gcc</groupId>
 									<artifactId>gcc-arm-elf_${os_family}_${os.arch}</artifactId>
-									<version>4.3.3_1</version>
+									<version>4.3.3_2</version>
 									<type>tar.bz2</type>
 									<overWrite>false</overWrite>
 									<outputDirectory>${gcc_dir}</outputDirectory>
