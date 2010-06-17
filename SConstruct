@@ -14,6 +14,7 @@
 #
 
 import scons_common
+import bootblock
 import build_properties
 import gen_random_seq
 import uuencode
@@ -110,10 +111,12 @@ if not GetOption('help'):
 	env_default.Replace(CCFLAGS = Split(default_ccflags))
 	env_default.Replace(LIBS = ['m', 'c', 'gcc'])
 	env_default.Replace(LINKFLAGS = ['-nostdlib', '-static', '-Map=${TARGET}.map'])
+	
+	bootblock.ApplyToEnv(env_default)
 	build_properties.ApplyToEnv(env_default)
 	gen_random_seq.ApplyToEnv(env_default)
 	uuencode.ApplyToEnv(env_default)
-	
+
 	
 	env_netx10 = env_default.Clone()
 	env_netx10.Append(CCFLAGS = ['-mcpu=arm966e-s'])
@@ -145,14 +148,12 @@ if not GetOption('help'):
 	all_sources_nx10  = [src.replace('src', 'targets/netx10')  for src in Split(xiptest_sources+xiptest_sources_nx10)]
 	env_netx10.Replace(LDFILE = 'src/netx10/netx10_sqixip2intram.ld')
 	xiptest_nx10_elf = env_netx10.Elf('targets/xiptest_netx10', all_sources_nx10 + prn_obj_nx10)
-#	xiptest_nx10_bin = env_netx10.ObjCopy('targets/xiptest_netx10', xiptest_nx10_elf)
 	
 	prn_bin_nx50 = env_netx50.Prn('targets/netx50/test.bin', None)
 	prn_obj_nx50 = env_netx50.Command('targets/netx50/test.o', prn_bin_nx50, '"$OBJCOPY" -v -I binary -O elf32-littlearm -B ARM --rename-section .data=.rodata --redefine-sym "_binary_targets_netx50_test_bin_start"="_binary_test_bin_start" --redefine-sym "_binary_targets_netx50_test_bin_end"="_binary_test_bin_end" $SOURCE $TARGET')
 	all_sources_nx50  = [src.replace('src', 'targets/netx50')  for src in Split(xiptest_sources+xiptest_sources_nx50)]
 	env_netx50.Replace(LDFILE = 'src/netx50/netx50_pflxip2intram.ld')
 	xiptest_nx50_elf = env_netx50.Elf('targets/xiptest_netx50', all_sources_nx50 + prn_obj_nx50)
-#	xiptest_nx50_bin = env_netx50.ObjCopy('targets/xiptest_netx50', xiptest_nx50_elf)
 	
 	
 	nx500pfl_env = env_netx500.Clone()
@@ -163,6 +164,7 @@ if not GetOption('help'):
 	nx500pfl_env.VariantDir('targets/netx500/pfl', 'src', duplicate=0)
 	nx500pfl_all_sources  = [src.replace('src', 'targets/netx500/pfl')  for src in Split(xiptest_sources+xiptest_sources_nx500)]
 	nx500pfl_elf = nx500pfl_env.Elf('targets/nx500_pfl', nx500pfl_all_sources + nx500pfl_prn_obj)
+	nx500pfl_js28f256j3_bin = env_netx50.BootBlock('targets/nx500_pfl_js28f256j3.bin', nx500pfl_elf, BOOTBLOCK_SRC='SRB_PF_JS28F256_J3', BOOTBLOCK_DST='SRB_PF_JS28F256_J3')
 	
 	nx500intram_env = env_netx500.Clone()
 	nx500intram_env.Replace(LDFILE = 'src/netx500/netx500_intram.ld')
@@ -172,3 +174,4 @@ if not GetOption('help'):
 	nx500intram_env.VariantDir('targets/netx500/intram', 'src', duplicate=0)
 	nx500intram_all_sources  = [src.replace('src', 'targets/netx500/intram')  for src in Split(xiptest_sources+xiptest_sources_nx500)]
 	nx500intram_elf = nx500intram_env.Elf('targets/nx500_intram', nx500intram_all_sources + nx500intram_prn_obj)
+	
