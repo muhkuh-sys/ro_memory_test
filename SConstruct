@@ -98,14 +98,15 @@ if not GetOption('help'):
 	# import the compiler definitions
 	#
 	# NOTE: it would be possible to use execfile instead of import here. This
-	gcc_arm_elf_4_3_3 = scons_common.get_compiler('gcc_arm_elf_4_3_3')
+	gcc_arm_elf_4_3_3_3 = scons_common.get_compiler('gcc_arm_elf_4_3_3_3')
 	
 	
 	#----------------------------------------------------------------------------
 	#
 	# create the default environment
 	#
-	env_default = gcc_arm_elf_4_3_3.get_gcc_arm_elf_4_3_3()
+	env_default = Environment()
+	gcc_arm_elf_4_3_3_3.ApplyToEnv(env_default)
 	env_default.Decider('timestamp-newer')
 	env_default.Append(CPPPATH = ['src'])
 	env_default.Replace(CCFLAGS = Split(default_ccflags))

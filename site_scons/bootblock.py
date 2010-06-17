@@ -67,10 +67,6 @@ def bootblock_action(target, source, env):
 	# Generate a temp filename for the binary.
 	strBinFileName = strElfFileName + '.bin'
 	
-	# NOTE: move this to the compiler py.
-	env['OBJDUMP'] = '/home/christoph/.m2/depack/gcc/gcc-arm-elf-4.3.3/bin/arm-elf-objdump'
-	env['READELF'] = '/home/christoph/.m2/depack/gcc/gcc-arm-elf-4.3.3/bin/arm-elf-readelf'
-	
 	# Extract the segments.
 	atSegments = get_segment_table(env, strElfFileName)
 	# Get the estimated binary size from the segments.
