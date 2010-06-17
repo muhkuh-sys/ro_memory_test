@@ -1,0 +1,14 @@
+1)  Prepare your system.
+    Install Maven2 from http://maven.apache.org/ .
+    Install Python2.6 from http://www.python.org/ .
+
+
+2)  Run 'mvn' to setup and build the project.
+    Maven takes care of several tasks:
+     * It installs all tools.
+     * It creates configuration files.
+     * It creates a shortcut to build the project with scons.
+     * It runs scons to build the project.
+
+3)  From now on use 'scons.bat' (or 'scons.sh' on Linux) to build the project.
+

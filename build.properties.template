@@ -1,0 +1,2 @@
+build_debug = False
+ASIC_DEBUGMSG = True
