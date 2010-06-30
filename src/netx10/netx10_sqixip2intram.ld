@@ -43,13 +43,13 @@ SECTIONS
 
 	.code_ram ORIGIN(INTRAM2_ITCM) : AT(ORIGIN(SQIROM)+0x40+SIZEOF(.code_xip))
 	{
-		__code_start__ = . ;
+		__copy_start__ = . ;
 
 		*(.text)
 
-		__code_end__ = . ;
+		__copy_end__ = . ;
 	} >INTRAM2_ITCM
-	__code_loadaddr__ = LOADADDR(.code_ram) ;
+	__copy_loadaddr__ = LOADADDR(.code_ram) ;
 
 
 	.rodata ORIGIN(SQIROM)+0x40+SIZEOF(.code_xip)+SIZEOF(.code_ram) :

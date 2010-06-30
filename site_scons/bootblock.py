@@ -105,25 +105,56 @@ def bootblock_action(target, source, env):
 	for ulData in aulApplicationData:
 		ulApplicationChecksum += ulData
 		ulApplicationChecksum &= 0xffffffff
-	# TODO: Read the xml file.
-	# TODO: extract the options.
 	
 	aBootBlock = array.array('L', [0]*16)
-	aBootBlock[0x00] = 0xf8beaf16			# Magic cookie.
-	aBootBlock[0x01] = 0x0100010c			# unCtrl
+	aBootBlock[0x00] = 0xf8beaf00			# Magic cookie.
+	aBootBlock[0x01] = 0x00000000			# unCtrl
 	aBootBlock[0x02] = ulExecAddress		# execution address
 	aBootBlock[0x03] = ulApplicationChecksum	# application checksum
 	aBootBlock[0x04] = ulApplicationSize/4		# application dword size
 	aBootBlock[0x05] = ulLoadAddress		# load address
 	aBootBlock[0x06] = 0x5854454e			# 'NETX' signature
-	aBootBlock[0x07] = 0x0100010c			# krams
+	aBootBlock[0x07] = 0x00000000			# krams
 	aBootBlock[0x08] = 0x00000000			# krams
 	aBootBlock[0x09] = 0x00000000			# krams
 	aBootBlock[0x0a] = 0x00000000			# krams
 	aBootBlock[0x0b] = 0x00000000			# krams
 	aBootBlock[0x0c] = 0x00000001			# misc_asic_ctrl dummy
 	aBootBlock[0x0d] = 0x00000000			# user data
-	aBootBlock[0x0e] = 0x00000001			# src type
+	aBootBlock[0x0e] = 0x00000000			# src type
+	
+	# Test if we need to read the xml file.
+	if isinstance(env['BOOTBLOCK_SRC'], str) or isinstance(env['BOOTBLOCK_DST'], str):
+		# TODO: Read the xml file.
+		raise Exception("read xml not done yet.")
+	
+	# Apply source options.
+	if isinstance(env['BOOTBLOCK_SRC'], dict):
+		for offset,value in env['BOOTBLOCK_SRC'].iteritems():
+			uiOffset = long(offset)
+			ulValue = long(value)
+			if uiOffset<0 or uiOffset>16:
+				raise Exception('invalid offset in BOOTBLOCK_SRC parameters: %s' % uiOffset)
+			aBootBlock[uiOffset] = ulValue
+	elif isinstance(env['BOOTBLOCK_SRC'], str):
+		# TODO: Read the xml file.
+		raise Exception("xml parameter not done yet.")
+	else:
+		raise Exception('The parameter BOOTBLOCK_SRC has an invalid type (%s), only dict and str can be processed.' % repr(type(env['BOOTBLOCK_SRC'])))
+	
+	# Apply destination options.
+	if isinstance(env['BOOTBLOCK_DST'], dict):
+		for offset,value in env['BOOTBLOCK_DST'].iteritems():
+			uiOffset = long(offset)
+			ulValue = long(value)
+			if uiOffset<0 or uiOffset>16:
+				raise Exception('invalid offset in BOOTBLOCK_DST parameters: %s' % uiOffset)
+			aBootBlock[uiOffset] = ulValue
+	elif isinstance(env['BOOTBLOCK_DST'], str):
+		# TODO: Read the xml file.
+		raise Exception("xml parameter not done yet.")
+	else:
+		raise Exception('The parameter BOOTBLOCK_DST has an invalid type (%s), only dict and str can be processed.' % repr(type(env['BOOTBLOCK_DST'])))
 	
 	# Build the bootblock checksum.
 	ulBootblockChecksum = 0

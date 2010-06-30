@@ -32,7 +32,7 @@ SECTIONS
 
 	.data ORIGIN(INTRAM3_DTCM) : AT(ORIGIN(INTRAM2_ITCM)+SIZEOF(.code))
 	{
-		__data_start__ = . ;
+		__copy_start__ = . ;
 
 		/* ro data */
 		*(.rodata*)
@@ -40,9 +40,9 @@ SECTIONS
 		/* rw data */
 		*(.data)
 
-		__data_end__ = . ;
+		__copy_end__ = . ;
 	} >INTRAM3_DTCM
-	__data_loadaddr__ = LOADADDR(.data) ;
+	__copy_loadaddr__ = LOADADDR(.data) ;
 
 
 	.serial_vectors ORIGIN(INTRAM0_DTCM)+LENGTH(INTRAM0_DTCM)-0x10 :

@@ -42,13 +42,13 @@ SECTIONS
 
 	.code_ram ORIGIN(INTRAM) : AT(ORIGIN(PARFLASH)+0x40+SIZEOF(.code_xip))
 	{
-		__code_start__ = . ;
+		__copy_start__ = . ;
 
 		*(.text)
 
-		__code_end__ = . ;
+		__copy_end__ = . ;
 	} >INTRAM
-	__code_loadaddr__ = LOADADDR(.code_ram) ;
+	__copy_loadaddr__ = LOADADDR(.code_ram) ;
 
 
 	.rodata ORIGIN(PARFLASH)+0x40+SIZEOF(.code_xip)+SIZEOF(.code_ram) :

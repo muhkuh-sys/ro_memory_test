@@ -18,15 +18,15 @@ start:
 	ldr	r0, =stack_top
 	mov	sp, r0
 
-	@ copy the code section
-	ldr	r0, =__code_loadaddr__
-	ldr	r1, =__code_start__
-	ldr	r2, =__code_end__
-copy_code:
+	@ copy code or data
+	ldr	r0, =__copy_loadaddr__
+	ldr	r1, =__copy_start__
+	ldr	r2, =__copy_end__
+copy:
 	cmp	r1, r2
 	ldrlo	r3, [r0], #4
 	strlo	r3, [r1], #4
-	blo	copy_code
+	blo	copy
 
 	@ clear .bss section (zero init)
 	mov	r0, #0
