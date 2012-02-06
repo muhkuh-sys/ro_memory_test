@@ -1,2 +1,1 @@
-build_debug = False
-ASIC_DEBUGMSG = True
+CFG_BUILD = 'release'
