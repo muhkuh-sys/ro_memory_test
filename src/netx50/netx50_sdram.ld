@@ -13,7 +13,6 @@ MEMORY
 {
 	ASSERT_EMPTY(rwx)       : ORIGIN = 0x00000000, LENGTH = 0
 
-	DTCM(rw)                : ORIGIN = 0x04000000, LENGTH = 0x00001000
 	INTRAM(rwx)             : ORIGIN = 0x08000000, LENGTH = 0x00018000
 	
 	/* NOTE: Do not start at the beginning of the SDRAM. This would trigger
@@ -37,12 +36,6 @@ SECTIONS
 		*(.v4_bx)
 	} >ASSERT_EMPTY
 
-
-	.serialvectors 0x04000ff0 :
-	{
-		PROVIDE ( tSerialVectors = . );
-		. = . + 0x10;
-	} >DTCM
 
 	.stack ORIGIN(INTRAM) :
 	{
