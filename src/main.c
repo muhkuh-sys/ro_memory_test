@@ -1,7 +1,7 @@
 
 #include <string.h>
 
-#include "i2c_hifsta.h"
+#include "rdy_run.h"
 #include "netx_io_areas.h"
 #include "systime.h"
 #include "uprintf.h"
@@ -33,7 +33,6 @@ void test_main(void)
 
 
 	systime_init();
-	i2c_hifsta_init();
 	uart_init(0, &tUartCfg_nxhx10_etm);
 
 	uprintf("*** hallo! ***\n");
@@ -45,12 +44,12 @@ void test_main(void)
 		if( (uiTestCnt&1)==0 )
 		{
 			/* Switch the leds off. */
-			i2c_hifsta_rdy_off_run_off();
+			rdy_run_setLEDs(RDYRUN_OFF);
 		}
 		else
 		{
 			/* Switch the green led on. */
-			i2c_hifsta_rdy_off_run_on();
+			rdy_run_setLEDs(RDYRUN_GREEN);
 		}
 
 		/* Loop over the complete test data. */
@@ -80,17 +79,12 @@ void test_main(void)
 	}
 
 
-
-
 	uprintf("Stop!\n");
 
-	tBlinkiHandle.ulMask     = 0x00000055;
-	tBlinkiHandle.ulState    = 0x00000150;
-	tBlinkiHandle.ulTimer    = 0;
-	tBlinkiHandle.uiPosition = 0;
+	rdy_run_blinki_init(&tBlinkiHandle, 0x00000055, 0x00000150);
 	while(1)
 	{
-		blinki(&tBlinkiHandle);
+		rdy_run_blinki(&tBlinkiHandle);
 	}
 }
 

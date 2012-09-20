@@ -12,30 +12,8 @@ Import('env_default')
 # This is the list of sources. The elements must be separated with whitespace
 # (i.e. spaces, tabs, newlines). The amount of whitespace does not matter.
 sources_common = """
-	src/i2c_hifsta.c
 	src/init_netx_test.S
 	src/main.c
-	src/systime.c
-	src/uart.c
-	src/uprintf.c
-"""
-
-sources_netx10 = """
-	src/netx10/netx10_io_areas.c
-"""
-
-
-sources_nx56 = """
-"""
-
-
-sources_nx50 = """
-	src/netx50/netx50_io_areas.c
-"""
-
-
-sources_nx500 = """
-	src/netx500/netx500_io_areas.c
 """
 
 
@@ -43,24 +21,29 @@ sources_nx500 = """
 #
 # Create the compiler environments.
 #
-
 env_default.Append(CPPPATH = ['src', 'platform'])
 
 env_netx500_default = env_default.CreateCompilerEnv('500', ['cpu=arm926ej-s'])
 env_netx500_default.Replace(BOOTBLOCK_CHIPTYPE = 500)
-env_netx500_default.Append(CPPPATH = ['src/netx500'])
 
 env_netx56_default = env_default.CreateCompilerEnv('56', ['cpu=arm966e-s'])
 env_netx56_default.Replace(BOOTBLOCK_CHIPTYPE = 56)
-env_netx56_default.Append(CPPPATH = ['src/netx56'])
 
 env_netx50_default = env_default.CreateCompilerEnv('50', ['cpu=arm966e-s'])
 env_netx50_default.Replace(BOOTBLOCK_CHIPTYPE = 50)
-env_netx50_default.Append(CPPPATH = ['src/netx50'])
 
 env_netx10_default = env_default.CreateCompilerEnv('10', ['cpu=arm966e-s'])
 env_netx10_default.Replace(BOOTBLOCK_CHIPTYPE = 10)
-env_netx10_default.Append(CPPPATH = ['src/netx10'])
+
+Export('env_netx500_default', 'env_netx56_default', 'env_netx50_default', 'env_netx10_default')
+
+
+#----------------------------------------------------------------------------
+#
+# Build the platform library.
+#
+SConscript('platform/SConscript')
+Import('platform_lib_netx500', 'platform_lib_netx56', 'platform_lib_netx50', 'platform_lib_netx10')
 
 
 #----------------------------------------------------------------------------
@@ -68,7 +51,6 @@ env_netx10_default.Append(CPPPATH = ['src/netx10'])
 # This is a helper function which generates a sequence of pseudo random
 # numbers.
 #
-
 def prn_obj(tEnv, sizSequence, strWorkingFolder):
 	strPrnBinFilename = 'targets/%s/prn.bin' % strWorkingFolder
 
@@ -83,12 +65,14 @@ def prn_obj(tEnv, sizSequence, strWorkingFolder):
 # Build all files.
 #
 
-env_netx10_sqixip = env_netx10_default.Clone()
-prn_netx10_sqixip = prn_obj(env_netx10_sqixip, 0x00080000, 'netx10_sqixip')
-env_netx10_sqixip.Replace(LDFILE = 'src/netx10/netx10_sqixip2intram.ld')
-src_netx10_sqixip = env_netx10_sqixip.SetBuildPath('targets/netx10_sqixip', 'src', sources_common + sources_netx10)
-elf_netx10_sqixip = env_netx10_sqixip.Elf('targets/netx10_sqixip.elf', src_netx10_sqixip + prn_netx10_sqixip)
-bb0_netx10_sqixip = env_netx10_sqixip.BootBlock('targets/nx10_sqixip.img', elf_netx10_sqixip, BOOTBLOCK_SRC=dict({0x01:0x00000008, 0x0e:0x00000002}), BOOTBLOCK_DST=dict({}))
+aCppPath = ['src', '#platform/src', '#platform/src/lib']
+
+#env_netx10_sqixip = env_netx10_default.Clone()
+#prn_netx10_sqixip = prn_obj(env_netx10_sqixip, 0x00080000, 'netx10_sqixip')
+#env_netx10_sqixip.Replace(LDFILE = 'src/netx10/netx10_sqixip2intram.ld')
+#src_netx10_sqixip = env_netx10_sqixip.SetBuildPath('targets/netx10_sqixip', 'src', sources_common + sources_netx10)
+#elf_netx10_sqixip = env_netx10_sqixip.Elf('targets/netx10_sqixip.elf', src_netx10_sqixip + prn_netx10_sqixip)
+#bb0_netx10_sqixip = env_netx10_sqixip.BootBlock('targets/nx10_sqixip.img', elf_netx10_sqixip, BOOTBLOCK_SRC=dict({0x01:0x00000008, 0x0e:0x00000002}), BOOTBLOCK_DST=dict({}))
 
 
 #	nx10_intram_env = env_netx10.Clone()
@@ -142,7 +126,8 @@ bb0_netx10_sqixip = env_netx10_sqixip.BootBlock('targets/nx10_sqixip.img', elf_n
 env_netx56_sqixip = env_netx56_default.Clone()
 prn_netx56_sqixip = prn_obj(env_netx56_sqixip, 0x00080000, 'netx56_sqixip')
 env_netx56_sqixip.Replace(LDFILE = 'src/netx56/netx56_sqixip2intram.ld')
-src_netx56_sqixip = env_netx56_sqixip.SetBuildPath('targets/netx56_sqixip', 'src', sources_common + sources_netx56)
-elf_netx56_sqixip = env_netx56_sqixip.Elf('targets/netx56_sqixip.elf', src_netx56_sqixip + prn_netx56_sqixip)
+env_netx56_sqixip.Append(CPPPATH = aCppPath)
+src_netx56_sqixip = env_netx56_sqixip.SetBuildPath('targets/netx56_sqixip', 'src', sources_common)
+elf_netx56_sqixip = env_netx56_sqixip.Elf('targets/netx56_sqixip.elf', src_netx56_sqixip + prn_netx56_sqixip + platform_lib_netx56)
 bb0_netx56_sqixip = env_netx56_sqixip.BootBlock('targets/netx56_sqixip.img', elf_netx56_sqixip, BOOTBLOCK_SRC=dict({0x01:0x00000008, 0x0e:0x00000002}), BOOTBLOCK_DST=dict({}))
 
