@@ -48,8 +48,8 @@ SECTIONS
 
 	.code 0x80000000 :
 	{
-		*(.init_code)
-		*(.text)
+		KEEP(*(.init_code))
+		*(.text*)
 	
 		/* .rodata section which is used for read-only data (constants) */
 		*(.rodata*)
