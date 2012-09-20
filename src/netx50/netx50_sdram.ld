@@ -15,7 +15,12 @@ MEMORY
 
 	DTCM(rw)                : ORIGIN = 0x04000000, LENGTH = 0x00001000
 	INTRAM(rwx)             : ORIGIN = 0x08000000, LENGTH = 0x00018000
-	SDRAM(rwx)              : ORIGIN = 0x80000000, LENGTH = 0x08000000
+	
+	/* NOTE: Do not start at the beginning of the SDRAM. This would trigger
+	 * the DMA controller bug which hangs the system when writing at address
+	 * 0x800dead0 .
+	 */
+	SDRAM(rwx)              : ORIGIN = 0x80100000, LENGTH = 0x00300000
 }
 
 
@@ -39,21 +44,11 @@ SECTIONS
 		. = . + 0x10;
 	} >DTCM
 
-	.stack 0x08000004 :
+	.stack ORIGIN(INTRAM) :
 	{
-		. = . + 0x7ffc;
+		. = . + 0x8000;
 		PROVIDE ( stack_top = . );
 	} >INTRAM
-
-
-	.code 0x80000000 :
-	{
-		KEEP(*(.init_code))
-		*(.text*)
-	
-		/* .rodata section which is used for read-only data (constants) */
-		*(.rodata*)
-	} >SDRAM
 
 	.bss :
 	{
@@ -62,6 +57,16 @@ SECTIONS
 		*(COMMON)
 		PROVIDE ( __bss_end__ = . );
 	} >INTRAM
+
+
+	.code ORIGIN(SDRAM) :
+	{
+		KEEP(*(.init_code))
+		*(.text*)
+	
+		/* .rodata section which is used for read-only data (constants) */
+		*(.rodata*)
+	} >SDRAM
 
 
 	/* Stabs debugging sections.  */
