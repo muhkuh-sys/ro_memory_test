@@ -128,6 +128,13 @@ bb0_netx50_sdram = env_netx50_sdram.BootBlock('targets/netx50_sdram/netx.rom', e
 #	nx500intram_all_sources  = [src.replace('src', 'targets/netx500/intram')  for src in Split(xiptest_sources+xiptest_sources_nx500)]
 #	nx500intram_elf = nx500intram_env.Elf('targets/nx500_intram', nx500intram_all_sources + nx500intram_prn_obj)
 
+env_netx56_sdram = env_netx56_default.Clone()
+env_netx56_sdram.Replace(LDFILE = 'src/netx56/netx56_sdram.ld')
+env_netx56_sdram.Append(CPPPATH = aCppPath)
+prn_netx56_sdram = prn_obj(env_netx56_sdram, 0x0003fd16, 'targets/netx56_sdram/prn.bin')
+src_netx56_sdram = env_netx56_sdram.SetBuildPath('targets/netx56_sdram', 'src', sources_common)
+elf_netx56_sdram = env_netx56_sdram.Elf('targets/netx56_sdram/rotest.elf', src_netx56_sdram + prn_netx56_sdram + platform_lib_netx56)
+bb0_netx56_sdram = env_netx56_sdram.BootBlock('targets/netx56_sdram/netx.rom', elf_netx56_sdram, BOOTBLOCK_SRC='MMC', BOOTBLOCK_DST='SD_MT48LC2M32B2')
 
 #env_netx56_sqixip = env_netx56_default.Clone()
 #prn_netx56_sqixip = prn_obj(env_netx56_sqixip, 0x00080000, 'netx56_sqixip')

@@ -1,7 +1,7 @@
 /*---------------------------------------------------------------------------
   Author : Christoph Thelen
 
-           Hilscher GmbH, Copyright (c) 2010, All Rights Reserved
+           Hilscher GmbH, Copyright (c) 2012, All Rights Reserved
 
            Redistribution or unauthorized use without expressed written 
            agreement from the Hilscher GmbH is forbidden
@@ -11,21 +11,16 @@ ENTRY(start)
 
 MEMORY
 {
-	ASSERT_EMPTY(rwx)	: ORIGIN = 0x00000000, LENGTH = 0
+	ASSERT_EMPTY(rwx)       : ORIGIN = 0x00000000, LENGTH = 0
 
-	INTRAM2_ITCM(rwx)	: ORIGIN = 0x00020000, LENGTH = 0x00010000
-	INTRAM0_DTCM(rwx)	: ORIGIN = 0x04000000, LENGTH = 0x00010000
-	INTRAM3_DTCM(rwx)	: ORIGIN = 0x04030000, LENGTH = 0x00010000
-	SQIROM(rx)		: ORIGIN = 0x09000000, LENGTH = 0x00400000
+	INTRAM(rwx)             : ORIGIN = 0x08000000, LENGTH = 0x000a0000
+	SDRAM(rwx)              : ORIGIN = 0x80000000, LENGTH = 0x00400000
 }
 
 
 /* Section Definitions */
 SECTIONS
 {
-	/* These sections must be empty, put them in a memory with a size of
-	 * 0 bytes
-	 */
 	.assert_empty (NOLOAD) :
 	{
 		/* NOTE: include all sections here which should be empty.
@@ -36,50 +31,30 @@ SECTIONS
 		*(.v4_bx)
 	} >ASSERT_EMPTY
 
-	.code_xip ORIGIN(SQIROM)+0x40 :
+
+	.stack ORIGIN(INTRAM) :
 	{
-		*(.init_code)
-	} >SQIROM
-
-	.code_ram ORIGIN(INTRAM2_ITCM) : AT(ORIGIN(SQIROM)+0x40+SIZEOF(.code_xip))
-	{
-		__copy_start__ = . ;
-
-		*(.text)
-
-		__copy_end__ = . ;
-	} >INTRAM2_ITCM
-	__copy_loadaddr__ = LOADADDR(.code_ram) ;
-
-
-	.rodata ORIGIN(SQIROM)+0x40+SIZEOF(.code_xip)+SIZEOF(.code_ram) :
-	{
-		*(.rodata*)
-	} >SQIROM
-
-
-	.serial_vectors ORIGIN(INTRAM0_DTCM)+LENGTH(INTRAM0_DTCM)-0x10 :
-	{
-		tSerialVectors = . ;
-		. = . + 0x10;
-	} >INTRAM0_DTCM
-
+		. = . + 0x8000;
+		PROVIDE ( stack_top = . );
+	} >INTRAM
 
 	.bss :
 	{
-		/* zero-initialized data */
-
-		__bss_start__ = . ;
-
+		PROVIDE ( __bss_start__ = . );
 		*(.bss)
 		*(COMMON)
+		PROVIDE ( __bss_end__ = . );
+	} >INTRAM
 
-		__bss_end__ = . ;
-	} >INTRAM3_DTCM
 
-
-	/* set the top of the stack to the end of INTRAM1 */
-	stack_top = ORIGIN(INTRAM3_DTCM) + LENGTH(INTRAM3_DTCM) ;
+	.code ORIGIN(SDRAM) :
+	{
+		KEEP(*(.init_code))
+		*(.text*)
+	
+		/* .rodata section which is used for read-only data (constants) */
+		*(.rodata*)
+	} >SDRAM
 
 
 	/* Stabs debugging sections.  */
