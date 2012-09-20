@@ -1,14 +1,32 @@
 1)  Prepare your system.
-    Install Maven2 from http://maven.apache.org/ .
-    Install Python2.6 from http://www.python.org/ .
+    Install the current stable version of python from http://www.python.org/ .
+    At the time of writing this is Python2.7 .
 
 
-2)  Run 'mvn' to setup and build the project.
-    Maven takes care of several tasks:
+2)  Setup and build the project.
+    Change to the folder with this textfile. Run the 'mbs/mbs' script to setup
+    and build the project.
+    
+    PLEASE NOTE: This step depends on the location of your python installation.
+    If python was installed in 'C:\Python27', run the command
+    'C:\Python27\python.exe mbs\mbs'.
+    
+    The setup script takes care of several tasks:
      * It installs all tools.
      * It creates configuration files.
      * It creates a shortcut to build the project with scons.
      * It runs scons to build the project.
 
-3)  From now on use 'scons.bat' (or 'scons.sh' on Linux) to build the project.
 
+3)  Build the project after a successful setup.
+    The 'setup.py' script creates 2 batch files:
+     * 'scons.bat' for Windows systems and
+     * 'scons.sh' for Linux systems
+    These scripts just build the project and skip the setup phase. Run the
+    command 'scons.bat' (or 'scons.sh' on Linux) to do this.
+    
+    Of course it is also possible to execute the 'mbs/mbs' script to setup and
+    build the project. The only drawback is that it takes a little bit longer
+    than the plain build without the setup phase.
+--
+cthelen@hilscher.com
