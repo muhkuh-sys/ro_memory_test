@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
 
+
+import os.path
+
 #----------------------------------------------------------------------------
 #
 # Set up the Muhkuh Build System.
@@ -51,13 +54,15 @@ Import('platform_lib_netx500', 'platform_lib_netx56', 'platform_lib_netx50', 'pl
 # This is a helper function which generates a sequence of pseudo random
 # numbers.
 #
-def prn_obj(tEnv, sizSequence, strWorkingFolder):
-	strPrnBinFilename = 'targets/%s/prn.bin' % strWorkingFolder
-
-	strCmd = '"$OBJCOPY" -v -I binary -O elf32-littlearm -B ARM --rename-section .data=.rodata --redefine-sym "_binary_targets_%s_prn_bin_start"="_binary_test_bin_start" --redefine-sym "_binary_targets_%s_prn_bin_end"="_binary_test_bin_end" $SOURCE $TARGET' % (strWorkingFolder, strWorkingFolder)
-
+def prn_obj(tEnv, sizSequence, strPrnBinFilename):
+	# Generate the sequence.
 	tPrnBin = tEnv.Prn(strPrnBinFilename, None, PRN_SIZE=sizSequence)
-	return tEnv.Command('targets/nx10_sqixip/prn.o', tPrnBin, strCmd)
+
+	# Convert the binary file into an object.
+	strLabelPath = strPrnBinFilename.replace('/', '_').replace('.', '_').replace('\\', '_')
+	strOutput = os.path.splitext(strPrnBinFilename)[0] + tEnv['OBJSUFFIX']
+	strCmd = '"$OBJCOPY" -v -I binary -O elf32-littlearm -B ARM --rename-section .data=.rodata --redefine-sym "_binary_%s_start"="_binary_test_bin_start" --redefine-sym "_binary_%s_end"="_binary_test_bin_end" $SOURCE $TARGET' % (strLabelPath, strLabelPath)
+	return tEnv.Command(strOutput, tPrnBin, strCmd)
 
 
 #----------------------------------------------------------------------------
@@ -93,16 +98,17 @@ aCppPath = ['src', '#platform/src', '#platform/src/lib']
 #	nx10_pflxip_env.Replace(LDFILE = 'src/netx10/netx10_pflxip.ld')
 #	nx10_pflxip_elf = nx10_pflxip_env.Elf('targets/nx10_pflxip', nx10_pflxip_src + nx10_pflxip_prnobj)
 #	nx10_pflxip_img = nx10_pflxip_env.BootBlock('targets/nx10_pflxip.img', nx10_pflxip_elf, BOOTBLOCK_SRC=dict({0x00:0xf8beaf16, 0x01:0x0103030f, 0x0c:0x00000007}), BOOTBLOCK_DST=dict({0x0e:0x00000001}))
-	
-	
-	
-#	prn_bin_nx50 = env_netx50.Prn('targets/netx50/test.bin', None)
-#	prn_obj_nx50 = env_netx50.Command('targets/netx50/test.o', prn_bin_nx50, '"$OBJCOPY" -v -I binary -O elf32-littlearm -B ARM --rename-section .data=.rodata --redefine-sym "_binary_targets_netx50_test_bin_start"="_binary_test_bin_start" --redefine-sym "_binary_targets_netx50_test_bin_end"="_binary_test_bin_end" $SOURCE $TARGET')
-#	all_sources_nx50  = [src.replace('src', 'targets/netx50')  for src in Split(xiptest_sources+xiptest_sources_nx50)]
-#	env_netx50.Replace(LDFILE = 'src/netx50/netx50_pflxip2intram.ld')
-#	xiptest_nx50_elf = env_netx50.Elf('targets/xiptest_netx50', all_sources_nx50 + prn_obj_nx50)
-	
-	
+
+
+env_netx50_sdram = env_netx50_default.Clone()
+env_netx50_sdram.Replace(LDFILE = 'src/netx50/netx50_sdram.ld')
+env_netx50_sdram.Append(CPPPATH = aCppPath)
+prn_netx50_sdram = prn_obj(env_netx50_sdram, 0x0003fd16, 'targets/netx50_sdram/prn.bin')
+src_netx50_sdram = env_netx50_sdram.SetBuildPath('targets/netx50_sdram', 'src', sources_common)
+elf_netx50_sdram = env_netx50_sdram.Elf('targets/netx50_sdram/rotest.elf', src_netx50_sdram + prn_netx50_sdram + platform_lib_netx50)
+bb0_netx50_sdram = env_netx50_sdram.BootBlock('targets/netx50_sdram/netx.rom', elf_netx50_sdram, BOOTBLOCK_SRC='MMC', BOOTBLOCK_DST='SD_MT48LC2M32B2')
+
+
 #	nx500pfl_env = env_netx500.Clone()
 #	nx500pfl_env.Replace(LDFILE = 'src/netx500/netx500_pflxip2intram.ld')
 #	nx500pfl_env.Replace(PRN_SIZE = 0x00080000)
@@ -123,11 +129,11 @@ aCppPath = ['src', '#platform/src', '#platform/src/lib']
 #	nx500intram_elf = nx500intram_env.Elf('targets/nx500_intram', nx500intram_all_sources + nx500intram_prn_obj)
 
 
-env_netx56_sqixip = env_netx56_default.Clone()
-prn_netx56_sqixip = prn_obj(env_netx56_sqixip, 0x00080000, 'netx56_sqixip')
-env_netx56_sqixip.Replace(LDFILE = 'src/netx56/netx56_sqixip2intram.ld')
-env_netx56_sqixip.Append(CPPPATH = aCppPath)
-src_netx56_sqixip = env_netx56_sqixip.SetBuildPath('targets/netx56_sqixip', 'src', sources_common)
-elf_netx56_sqixip = env_netx56_sqixip.Elf('targets/netx56_sqixip.elf', src_netx56_sqixip + prn_netx56_sqixip + platform_lib_netx56)
-bb0_netx56_sqixip = env_netx56_sqixip.BootBlock('targets/netx56_sqixip.img', elf_netx56_sqixip, BOOTBLOCK_SRC=dict({0x01:0x00000008, 0x0e:0x00000002}), BOOTBLOCK_DST=dict({}))
+#env_netx56_sqixip = env_netx56_default.Clone()
+#prn_netx56_sqixip = prn_obj(env_netx56_sqixip, 0x00080000, 'netx56_sqixip')
+#env_netx56_sqixip.Replace(LDFILE = 'src/netx56/netx56_sqixip2intram.ld')
+#env_netx56_sqixip.Append(CPPPATH = aCppPath)
+#src_netx56_sqixip = env_netx56_sqixip.SetBuildPath('targets/netx56_sqixip', 'src', sources_common)
+#elf_netx56_sqixip = env_netx56_sqixip.Elf('targets/netx56_sqixip.elf', src_netx56_sqixip + prn_netx56_sqixip + platform_lib_netx56)
+#bb0_netx56_sqixip = env_netx56_sqixip.BootBlock('targets/netx56_sqixip.img', elf_netx56_sqixip, BOOTBLOCK_SRC=dict({0x01:0x00000008, 0x0e:0x00000002}), BOOTBLOCK_DST=dict({}))
 
