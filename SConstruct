@@ -136,11 +136,11 @@ src_netx56_sdram = env_netx56_sdram.SetBuildPath('targets/netx56_sdram', 'src', 
 elf_netx56_sdram = env_netx56_sdram.Elf('targets/netx56_sdram/rotest.elf', src_netx56_sdram + prn_netx56_sdram + platform_lib_netx56)
 bb0_netx56_sdram = env_netx56_sdram.BootBlock('targets/netx56_sdram/netx.rom', elf_netx56_sdram, BOOTBLOCK_SRC='MMC', BOOTBLOCK_DST='SD_MT48LC2M32B2')
 
-#env_netx56_sqixip = env_netx56_default.Clone()
-#prn_netx56_sqixip = prn_obj(env_netx56_sqixip, 0x00080000, 'netx56_sqixip')
-#env_netx56_sqixip.Replace(LDFILE = 'src/netx56/netx56_sqixip2intram.ld')
-#env_netx56_sqixip.Append(CPPPATH = aCppPath)
-#src_netx56_sqixip = env_netx56_sqixip.SetBuildPath('targets/netx56_sqixip', 'src', sources_common)
-#elf_netx56_sqixip = env_netx56_sqixip.Elf('targets/netx56_sqixip.elf', src_netx56_sqixip + prn_netx56_sqixip + platform_lib_netx56)
-#bb0_netx56_sqixip = env_netx56_sqixip.BootBlock('targets/netx56_sqixip.img', elf_netx56_sqixip, BOOTBLOCK_SRC=dict({0x01:0x00000008, 0x0e:0x00000002}), BOOTBLOCK_DST=dict({}))
+env_netx56_sqixip = env_netx56_default.Clone()
+env_netx56_sqixip.Replace(LDFILE = 'src/netx56/netx56_sqixip.ld')
+env_netx56_sqixip.Append(CPPPATH = aCppPath)
+prn_netx56_sqixip = prn_obj(env_netx56_sqixip, 0x00080000, 'targets/netx56_sqixip/prn.bin')
+src_netx56_sqixip = env_netx56_sqixip.SetBuildPath('targets/netx56_sqixip', 'src', sources_common)
+elf_netx56_sqixip = env_netx56_sqixip.Elf('targets/netx56_sqixip/rotest.elf', src_netx56_sqixip + prn_netx56_sqixip + platform_lib_netx56)
+bb0_netx56_sqixip = env_netx56_sqixip.BootBlock('targets/netx56_sqixip/rotest.img', elf_netx56_sqixip, BOOTBLOCK_SRC=dict({0x01:0x00000008, 0x0e:0x00000002}), BOOTBLOCK_DST=dict({}))
 
