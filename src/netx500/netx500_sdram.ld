@@ -12,7 +12,7 @@ ENTRY(start)
 MEMORY
 {
 	ASSERT_EMPTY(rwx)       : ORIGIN = 0x00000000, LENGTH = 0
-	SDRAM(rwx)              : ORIGIN = 0x80000000, LENGTH = 0x00300000
+	SDRAM(rwx)              : ORIGIN = 0x80000000, LENGTH = 0x00800000
 }
 
 
