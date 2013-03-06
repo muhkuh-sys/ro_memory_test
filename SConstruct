@@ -133,7 +133,7 @@ bb0_netx50_sdram = env_netx50_sdram.BootBlock('targets/netx50_sdram/netx.rom', e
 env_netx500_sdram = env_netx500_default.Clone()
 env_netx500_sdram.Replace(LDFILE = 'src/netx500/netx500_sdram.ld')
 env_netx500_sdram.Append(CPPPATH = aCppPath)
-prn_netx500_sdram = prn_obj(env_netx500_sdram, 0x0003fd16, 'targets/netx500/sdram/prn.bin')
+prn_netx500_sdram = prn_obj(env_netx500_sdram, 0x00100000, 'targets/netx500/sdram/prn.bin')
 src_netx500_sdram = env_netx500_sdram.SetBuildPath('targets/netx500/sdram', 'src', sources_common)
 elf_netx500_sdram = env_netx500_sdram.Elf('targets/netx500/sdram/rotest.elf', src_netx500_sdram + prn_netx500_sdram + platform_lib_netx500)
 bb0_netx500_sdram = env_netx500_sdram.BootBlock('targets/netx500/sdram/MT48LC2M32B2/netx.rom', elf_netx500_sdram, BOOTBLOCK_SRC='MMC', BOOTBLOCK_DST='SD_MT48LC2M32B2')
