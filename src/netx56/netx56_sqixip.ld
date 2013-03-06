@@ -36,6 +36,11 @@ SECTIONS
 	{
 		KEEP(*(.init_code))
 		*(.text*)
+
+		/* The PRN data must be DWORD aligned. */ 
+		. = ALIGN(4);
+		*(.rodata.prn)
+
 		*(.rodata*)
 	} >SQIROM
 

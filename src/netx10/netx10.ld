@@ -34,7 +34,10 @@ SECTIONS
 	{
 		__copy_start__ = . ;
 
-		/* ro data */
+		/* The PRN data must be DWORD aligned. */ 
+		. = ALIGN(4);
+		*(.rodata.prn)
+
 		*(.rodata*)
 
 		/* rw data */

@@ -54,6 +54,10 @@ SECTIONS
 
 	.rodata ORIGIN(SQIROM)+0x40+SIZEOF(.code_xip)+SIZEOF(.code_ram) :
 	{
+		/* The PRN data must be DWORD aligned. */ 
+		. = ALIGN(4);
+		*(.rodata.prn)
+
 		*(.rodata*)
 	} >SQIROM
 

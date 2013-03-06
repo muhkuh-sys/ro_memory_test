@@ -52,7 +52,10 @@ SECTIONS
 		KEEP(*(.init_code))
 		*(.text*)
 	
-		/* .rodata section which is used for read-only data (constants) */
+		/* The PRN data must be DWORD aligned. */ 
+		. = ALIGN(4);
+		*(.rodata.prn)
+
 		*(.rodata*)
 	} >SDRAM
 

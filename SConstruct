@@ -65,7 +65,7 @@ def prn_obj(tEnv, sizSequence, strPrnBinFilename):
 	# Convert the binary file into an object.
 	strLabelPath = strPrnBinFilename.replace('/', '_').replace('.', '_').replace('\\', '_')
 	strOutput = os.path.splitext(strPrnBinFilename)[0] + tEnv['OBJSUFFIX']
-	strCmd = '"$OBJCOPY" -v -I binary -O elf32-littlearm -B ARM --rename-section .data=.rodata --redefine-sym "_binary_%s_start"="_binary_test_bin_start" --redefine-sym "_binary_%s_end"="_binary_test_bin_end" $SOURCE $TARGET' % (strLabelPath, strLabelPath)
+	strCmd = '"$OBJCOPY" -v -I binary -O elf32-littlearm -B ARM --rename-section .data=.rodata.prn --redefine-sym "_binary_%s_start"="_binary_test_bin_start" --redefine-sym "_binary_%s_end"="_binary_test_bin_end" $SOURCE $TARGET' % (strLabelPath, strLabelPath)
 	return tEnv.Command(strOutput, tPrnBin, strCmd)
 
 
