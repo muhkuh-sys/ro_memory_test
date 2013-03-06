@@ -140,7 +140,7 @@ void test_main(void)
 #endif
 
 
-	uprintf("*** Memory RO test ***\n");
+	uprintf("*** Memory RO test by cthelen@hilscher.com ***\n");
 	uprintf("V" VERSION_ALL "\n\n");
 
 	uprintf("This test checks a pre-defined pattern in the following area:\n");
