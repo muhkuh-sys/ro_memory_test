@@ -189,6 +189,17 @@ prn_netx56_sqixip_512k = prn_obj(env_netx56_sqixip_512k, 0x00020000, 'targets/ne
 elf_netx56_sqixip_512k = env_netx56_sqixip_512k.Elf('targets/netx56_sqixip/rotest_512k.elf', src_netx56_sqixip_512k + platform_lib_netx56 + prn_netx56_sqixip_512k)
 bb0_netx56_sqixip_512k = env_netx56_sqixip_512k.BootBlock('targets/rotest_netx56_sqixip_512k.img', elf_netx56_sqixip_512k, BOOTBLOCK_SRC=dict({0x01:0x00000008, 0x0e:0x00000002}), BOOTBLOCK_DST=dict({}))
 
+env_netx56_sqixip_1m = env_netx56_sqixip.Clone()
+src_netx56_sqixip_1m = env_netx56_sqixip_1m.SetBuildPath('targets/netx56_sqixip_1m', 'src', sources_common + sources_netx56)
+prn_netx56_sqixip_1m = prn_obj(env_netx56_sqixip_1m, 0x00040000, 'targets/netx56_sqixip_1m/prn_1m.bin')
+elf_netx56_sqixip_1m = env_netx56_sqixip_1m.Elf('targets/netx56_sqixip/rotest_1m.elf', src_netx56_sqixip_1m + platform_lib_netx56 + prn_netx56_sqixip_1m)
+bb0_netx56_sqixip_1m = env_netx56_sqixip_1m.BootBlock('targets/rotest_netx56_sqixip_1m.img', elf_netx56_sqixip_1m, BOOTBLOCK_SRC=dict({0x01:0x00000008, 0x0e:0x00000002}), BOOTBLOCK_DST=dict({}))
+
+env_netx56_sqixip_2m = env_netx56_sqixip.Clone()
+src_netx56_sqixip_2m = env_netx56_sqixip_2m.SetBuildPath('targets/netx56_sqixip_2m', 'src', sources_common + sources_netx56)
+prn_netx56_sqixip_2m = prn_obj(env_netx56_sqixip_2m, 0x00080000, 'targets/netx56_sqixip_2m/prn_2m.bin')
+elf_netx56_sqixip_2m = env_netx56_sqixip_2m.Elf('targets/netx56_sqixip/rotest_2m.elf', src_netx56_sqixip_2m + platform_lib_netx56 + prn_netx56_sqixip_2m)
+bb0_netx56_sqixip_2m = env_netx56_sqixip_2m.BootBlock('targets/rotest_netx56_sqixip_2m.img', elf_netx56_sqixip_2m, BOOTBLOCK_SRC=dict({0x01:0x00000008, 0x0e:0x00000002}), BOOTBLOCK_DST=dict({}))
 
 
 env_netx56_intram = env_netx56.Clone()
