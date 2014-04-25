@@ -114,10 +114,24 @@ aCppPath = ['src', '#platform/src', '#platform/src/lib', '#targets/version']
 env_netx50_sdram = env_netx50_default.Clone()
 env_netx50_sdram.Replace(LDFILE = 'src/netx50/netx50_sdram.ld')
 env_netx50_sdram.Append(CPPPATH = aCppPath)
-prn_netx50_sdram = prn_obj(env_netx50_sdram, 0x0003fd16, 'targets/netx50_sdram/prn.bin')
-src_netx50_sdram = env_netx50_sdram.SetBuildPath('targets/netx50_sdram', 'src', sources_common)
-elf_netx50_sdram = env_netx50_sdram.Elf('targets/netx50_sdram/rotest.elf', src_netx50_sdram + prn_netx50_sdram + platform_lib_netx50)
-bb0_netx50_sdram = env_netx50_sdram.BootBlock('targets/netx50_sdram/netx.rom', elf_netx50_sdram, BOOTBLOCK_SRC='MMC', BOOTBLOCK_DST='SD_MT48LC2M32B2')
+
+env_netx50_sdram_128k = env_netx50_sdram.Clone()
+prn_netx50_sdram_128k = prn_obj(env_netx50_sdram_128k, 0x00008000, 'targets/netx50_sdram_128k/prn_128k.bin')
+src_netx50_sdram_128k = env_netx50_sdram_128k.SetBuildPath('targets/netx50_sdram_128k', 'src', sources_common)
+elf_netx50_sdram_128k = env_netx50_sdram_128k.Elf('targets/netx50_sdram_128k/rotest_128k.elf', src_netx50_sdram_128k + prn_netx50_sdram_128k + platform_lib_netx50)
+bb0_netx50_sdram_128k = env_netx50_sdram_128k.BootBlock('targets/netx50_sdram_128k/MT48LC2M32B2/netx.rom', elf_netx50_sdram_128k, BOOTBLOCK_SRC='MMC', BOOTBLOCK_DST='SD_MT48LC2M32B2')
+
+env_netx50_sdram_256k = env_netx50_sdram.Clone()
+prn_netx50_sdram_256k = prn_obj(env_netx50_sdram_256k, 0x00010000, 'targets/netx50_sdram_256k/prn_256k.bin')
+src_netx50_sdram_256k = env_netx50_sdram_256k.SetBuildPath('targets/netx50_sdram_256k', 'src', sources_common)
+elf_netx50_sdram_256k = env_netx50_sdram_256k.Elf('targets/netx50_sdram_256k/rotest_256k.elf', src_netx50_sdram_256k + prn_netx50_sdram_256k + platform_lib_netx50)
+bb0_netx50_sdram_256k = env_netx50_sdram_256k.BootBlock('targets/netx50_sdram_256k/MT48LC2M32B2/netx.rom', elf_netx50_sdram_256k, BOOTBLOCK_SRC='MMC', BOOTBLOCK_DST='SD_MT48LC2M32B2')
+
+env_netx50_sdram_512k = env_netx50_sdram.Clone()
+prn_netx50_sdram_512k = prn_obj(env_netx50_sdram_512k, 0x00020000, 'targets/netx50_sdram_512k/prn_512k.bin')
+src_netx50_sdram_512k = env_netx50_sdram_512k.SetBuildPath('targets/netx50_sdram_512k', 'src', sources_common)
+elf_netx50_sdram_512k = env_netx50_sdram_512k.Elf('targets/netx50_sdram_512k/rotest_512k.elf', src_netx50_sdram_512k + prn_netx50_sdram_512k + platform_lib_netx50)
+bb0_netx50_sdram_512k = env_netx50_sdram_512k.BootBlock('targets/netx50_sdram_512k/MT48LC2M32B2/netx.rom', elf_netx50_sdram_512k, BOOTBLOCK_SRC='MMC', BOOTBLOCK_DST='SD_MT48LC2M32B2')
 
 
 #	nx500pfl_env = env_netx500.Clone()
@@ -133,11 +147,25 @@ bb0_netx50_sdram = env_netx50_sdram.BootBlock('targets/netx50_sdram/netx.rom', e
 env_netx500_sdram = env_netx500_default.Clone()
 env_netx500_sdram.Replace(LDFILE = 'src/netx500/netx500_sdram.ld')
 env_netx500_sdram.Append(CPPPATH = aCppPath)
-prn_netx500_sdram = prn_obj(env_netx500_sdram, 0x00100000, 'targets/netx500/sdram/prn.bin')
-src_netx500_sdram = env_netx500_sdram.SetBuildPath('targets/netx500/sdram', 'src', sources_common)
-elf_netx500_sdram = env_netx500_sdram.Elf('targets/netx500/sdram/rotest.elf', src_netx500_sdram + prn_netx500_sdram + platform_lib_netx500)
-bb0_netx500_sdram = env_netx500_sdram.BootBlock('targets/netx500/sdram/MT48LC2M32B2/netx.rom', elf_netx500_sdram, BOOTBLOCK_SRC='MMC', BOOTBLOCK_DST='SD_MT48LC2M32B2')
 
+env_netx500_sdram_128k = env_netx500_sdram.Clone()
+prn_netx500_sdram_128k = prn_obj(env_netx500_sdram_128k, 0x00008000, 'targets/netx500_sdram_128k/prn_128k.bin')
+src_netx500_sdram_128k = env_netx500_sdram_128k.SetBuildPath('targets/netx500_sdram_128k', 'src', sources_common)
+elf_netx500_sdram_128k = env_netx500_sdram_128k.Elf('targets/netx500_sdram_128k/rotest_128k.elf', src_netx500_sdram_128k + prn_netx500_sdram_128k + platform_lib_netx500)
+bb0_netx500_sdram_128k = env_netx500_sdram_128k.BootBlock('targets/netx500_sdram_128k/MT48LC2M32B2/netx.rom', elf_netx500_sdram_128k, BOOTBLOCK_SRC='MMC', BOOTBLOCK_DST='SD_MT48LC2M32B2')
+
+env_netx500_sdram_256k = env_netx500_sdram.Clone()
+prn_netx500_sdram_256k = prn_obj(env_netx500_sdram_256k, 0x00010000, 'targets/netx500_sdram_256k/prn_256k.bin')
+src_netx500_sdram_256k = env_netx500_sdram_256k.SetBuildPath('targets/netx500_sdram_256k', 'src', sources_common)
+elf_netx500_sdram_256k = env_netx500_sdram_256k.Elf('targets/netx500_sdram_256k/rotest_256k.elf', src_netx500_sdram_256k + prn_netx500_sdram_256k + platform_lib_netx500)
+bb0_netx500_sdram_256k = env_netx500_sdram_256k.BootBlock('targets/netx500_sdram_256k/MT48LC2M32B2/netx.rom', elf_netx500_sdram_256k, BOOTBLOCK_SRC='MMC', BOOTBLOCK_DST='SD_MT48LC2M32B2')
+
+env_netx500_sdram_512k = env_netx500_sdram.Clone()
+prn_netx500_sdram_512k = prn_obj(env_netx500_sdram_512k, 0x00020000, 'targets/netx500_sdram_512k/prn_512k.bin')
+src_netx500_sdram_512k = env_netx500_sdram_512k.SetBuildPath('targets/netx500_sdram_512k', 'src', sources_common)
+elf_netx500_sdram_512k = env_netx500_sdram_512k.Elf('targets/netx500_sdram_512k/rotest_512k.elf', src_netx500_sdram_512k + prn_netx500_sdram_512k + platform_lib_netx500)
+bb0_netx500_sdram_512k = env_netx500_sdram_512k.BootBlock('targets/netx500_sdram_512k/MT48LC2M32B2/netx.rom', elf_netx500_sdram_512k, BOOTBLOCK_SRC='MMC', BOOTBLOCK_DST='SD_MT48LC2M32B2')
+bb1_netx500_sdram_512k = env_netx500_sdram_512k.BootBlock('targets/rotest_netx500_MT48LC2M32B2_512k.img', elf_netx500_sdram_512k, BOOTBLOCK_SRC='SPI_GEN_10', BOOTBLOCK_DST='SD_MT48LC2M32B2')
 
 #
 # netX56
@@ -153,19 +181,19 @@ env_netx56_sdram_128k = env_netx56_sdram.Clone()
 src_netx56_sdram_128k = env_netx56_sdram_128k.SetBuildPath('targets/netx56_sdram_128k', 'src', sources_common + sources_netx56)
 prn_netx56_sdram_128k = prn_obj(env_netx56_sdram_128k, 0x00008000, 'targets/netx56_sdram_128k/prn_128k.bin')
 elf_netx56_sdram_128k = env_netx56_sdram_128k.Elf('targets/netx56_sdram/rotest_128k.elf', src_netx56_sdram_128k + platform_lib_netx56 + prn_netx56_sdram_128k)
-bb0_netx56_sdram_128k = env_netx56_sdram_128k.BootBlock('targets/rotest_netx56_sdram_128k.img', elf_netx56_sdram_128k, BOOTBLOCK_SRC='MMC', BOOTBLOCK_DST='SD_MT48LC2M32B2')
+bb0_netx56_sdram_128k = env_netx56_sdram_128k.BootBlock('targets/rotest_netx56_MT48LC2M32B2_128k.img', elf_netx56_sdram_128k, BOOTBLOCK_SRC='SPI_GEN_10', BOOTBLOCK_DST='SD_MT48LC2M32B2')
 
 env_netx56_sdram_256k = env_netx56_sdram.Clone()
 src_netx56_sdram_256k = env_netx56_sdram_256k.SetBuildPath('targets/netx56_sdram_256k', 'src', sources_common + sources_netx56)
 prn_netx56_sdram_256k = prn_obj(env_netx56_sdram_256k, 0x00010000, 'targets/netx56_sdram_256k/prn_256k.bin')
 elf_netx56_sdram_256k = env_netx56_sdram_256k.Elf('targets/netx56_sdram/rotest_256k.elf', src_netx56_sdram_256k + platform_lib_netx56 + prn_netx56_sdram_256k)
-bb0_netx56_sdram_256k = env_netx56_sdram_256k.BootBlock('targets/rotest_netx56_sdram_256k.img', elf_netx56_sdram_256k, BOOTBLOCK_SRC='MMC', BOOTBLOCK_DST='SD_MT48LC2M32B2')
+bb0_netx56_sdram_256k = env_netx56_sdram_256k.BootBlock('targets/rotest_netx56_MT48LC2M32B2_256k.img', elf_netx56_sdram_256k, BOOTBLOCK_SRC='SPI_GEN_10', BOOTBLOCK_DST='SD_MT48LC2M32B2')
 
 env_netx56_sdram_512k = env_netx56_sdram.Clone()
 src_netx56_sdram_512k = env_netx56_sdram_512k.SetBuildPath('targets/netx56_sdram_512k', 'src', sources_common + sources_netx56)
 prn_netx56_sdram_512k = prn_obj(env_netx56_sdram_512k, 0x00020000, 'targets/netx56_sdram_512k/prn_512k.bin')
 elf_netx56_sdram_512k = env_netx56_sdram_512k.Elf('targets/netx56_sdram/rotest_512k.elf', src_netx56_sdram_512k + platform_lib_netx56 + prn_netx56_sdram_512k)
-bb0_netx56_sdram_512k = env_netx56_sdram_512k.BootBlock('targets/rotest_netx56_sdram_512k.img', elf_netx56_sdram_512k, BOOTBLOCK_SRC='MMC', BOOTBLOCK_DST='SD_MT48LC2M32B2')
+bb0_netx56_sdram_512k = env_netx56_sdram_512k.BootBlock('targets/rotest_netx56_MT48LC2M32B2_512k.img', elf_netx56_sdram_512k, BOOTBLOCK_SRC='SPI_GEN_10', BOOTBLOCK_DST='SD_MT48LC2M32B2')
 
 
 env_netx56_sqixip = env_netx56.Clone()
