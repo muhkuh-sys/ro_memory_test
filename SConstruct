@@ -20,6 +20,11 @@ sources_common = """
 	src/main.c
 """
 
+
+sources_netx10 = """
+"""
+
+
 sources_netx56 = """
 	src/usb_cdc.c
 """
@@ -62,11 +67,11 @@ Import('platform_lib_netx500', 'platform_lib_netx56', 'platform_lib_netx50', 'pl
 def prn_obj(tEnv, sizSequence, strPrnBinFilename):
 	# Generate the sequence.
 	tPrnBin = tEnv.Prn(strPrnBinFilename, None, PRN_SIZE=sizSequence)
-
+	
 	# Convert the binary file into an object.
 	strLabelPath = strPrnBinFilename.replace('/', '_').replace('.', '_').replace('\\', '_')
 	strOutput = os.path.splitext(strPrnBinFilename)[0] + tEnv['OBJSUFFIX']
-	strCmd = '"$OBJCOPY" -v -I binary -O elf32-littlearm -B ARM --rename-section .data=.rodata.prn --redefine-sym "_binary_%s_start"="_binary_test_bin_start" --redefine-sym "_binary_%s_end"="_binary_test_bin_end" $SOURCE $TARGET' % (strLabelPath, strLabelPath)
+	strCmd = '"$OBJCOPY" -v -I binary -O elf32-littlearm -B ARM --rename-section .data=.prn_rodata --redefine-sym "_binary_%s_start"="_binary_test_bin_start" --redefine-sym "_binary_%s_end"="_binary_test_bin_end" $SOURCE $TARGET' % (strLabelPath, strLabelPath)
 	return tEnv.Command(strOutput, tPrnBin, strCmd)
 
 
@@ -84,12 +89,31 @@ env_default.Version('targets/version/version.h', 'templates/version.h')
 
 aCppPath = ['src', '#platform/src', '#platform/src/lib', '#targets/version']
 
-#env_netx10_sqixip = env_netx10_default.Clone()
-#prn_netx10_sqixip = prn_obj(env_netx10_sqixip, 0x00080000, 'netx10_sqixip')
-#env_netx10_sqixip.Replace(LDFILE = 'src/netx10/netx10_sqixip2intram.ld')
-#src_netx10_sqixip = env_netx10_sqixip.SetBuildPath('targets/netx10_sqixip', 'src', sources_common + sources_netx10)
-#elf_netx10_sqixip = env_netx10_sqixip.Elf('targets/netx10_sqixip.elf', src_netx10_sqixip + prn_netx10_sqixip)
-#bb0_netx10_sqixip = env_netx10_sqixip.BootBlock('targets/nx10_sqixip.img', elf_netx10_sqixip, BOOTBLOCK_SRC=dict({0x01:0x00000008, 0x0e:0x00000002}), BOOTBLOCK_DST=dict({}))
+
+env_netx10 = env_netx10_default.Clone()
+env_netx10.Append(CPPPATH = aCppPath)
+
+env_netx10_sqixip = env_netx10.Clone()
+env_netx10_sqixip.Replace(LDFILE = 'src/netx10/netx10_sqixip.ld')
+
+env_netx10_sqixip_128k = env_netx10_sqixip.Clone()
+prn_netx10_sqixip_128k = prn_obj(env_netx10_sqixip_128k, 0x00008000, 'targets/netx10_sqixip_128k/prn_128k.bin')
+src_netx10_sqixip_128k = env_netx10_sqixip_128k.SetBuildPath('targets/netx10_sqixip_128k', 'src', sources_common + sources_netx10)
+elf_netx10_sqixip_128k = env_netx10_sqixip_128k.Elf('targets/netx10_sqixip_128k/netx10_sqixip.elf', src_netx10_sqixip_128k + platform_lib_netx10 + prn_netx10_sqixip_128k)
+bb0_netx10_sqixip_128k = env_netx10_sqixip_128k.BootBlock('targets/rotest_netx10_sqixip_128k.img', elf_netx10_sqixip_128k, BOOTBLOCK_SRC=dict({0x01:0x00000008, 0x0e:0x00000002}), BOOTBLOCK_DST=dict({}))
+
+env_netx10_sqixip_256k = env_netx10_sqixip.Clone()
+prn_netx10_sqixip_256k = prn_obj(env_netx10_sqixip_256k, 0x00010000, 'targets/netx10_sqixip_256k/prn_256k.bin')
+src_netx10_sqixip_256k = env_netx10_sqixip_256k.SetBuildPath('targets/netx10_sqixip_256k', 'src', sources_common + sources_netx10)
+elf_netx10_sqixip_256k = env_netx10_sqixip_256k.Elf('targets/netx10_sqixip_256k/netx10_sqixip.elf', src_netx10_sqixip_256k + platform_lib_netx10 + prn_netx10_sqixip_256k)
+bb0_netx10_sqixip_256k = env_netx10_sqixip_256k.BootBlock('targets/rotest_netx10_sqixip_256k.img', elf_netx10_sqixip_256k, BOOTBLOCK_SRC=dict({0x01:0x00000008, 0x0e:0x00000002}), BOOTBLOCK_DST=dict({}))
+
+env_netx10_sqixip_512k = env_netx10_sqixip.Clone()
+prn_netx10_sqixip_512k = prn_obj(env_netx10_sqixip_512k, 0x00020000, 'targets/netx10_sqixip_512k/prn_512k.bin')
+src_netx10_sqixip_512k = env_netx10_sqixip_512k.SetBuildPath('targets/netx10_sqixip_512k', 'src', sources_common + sources_netx10)
+elf_netx10_sqixip_512k = env_netx10_sqixip_512k.Elf('targets/netx10_sqixip_512k/netx10_sqixip.elf', src_netx10_sqixip_512k + platform_lib_netx10 + prn_netx10_sqixip_512k)
+bb0_netx10_sqixip_512k = env_netx10_sqixip_512k.BootBlock('targets/rotest_netx10_sqixip_512k.img', elf_netx10_sqixip_512k, BOOTBLOCK_SRC=dict({0x01:0x00000008, 0x0e:0x00000002}), BOOTBLOCK_DST=dict({}))
+
 
 
 #	nx10_intram_env = env_netx10.Clone()
