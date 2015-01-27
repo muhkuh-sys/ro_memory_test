@@ -49,13 +49,11 @@ SECTIONS
 	{
 		KEEP(*(.header))
 		KEEP(*(.init_code))
-		*(.text*)
-	
+		*(.text* .rodata*)
+		
 		/* The PRN data must be DWORD aligned. */ 
 		. = ALIGN(4);
-		*(.rodata.prn)
-		
-		*(.rodata*)
+		*(.prn_rodata)
 	} >SDRAM
 
 

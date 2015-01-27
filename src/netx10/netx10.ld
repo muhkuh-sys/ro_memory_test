@@ -33,16 +33,16 @@ SECTIONS
 	.data ORIGIN(INTRAM3_DTCM) : AT(ORIGIN(INTRAM2_ITCM)+SIZEOF(.code))
 	{
 		__copy_start__ = . ;
-
+		
 		/* The PRN data must be DWORD aligned. */ 
 		. = ALIGN(4);
-		*(.rodata.prn)
-
+		*(.prn_rodata)
+		
 		*(.rodata*)
-
+		
 		/* rw data */
 		*(.data)
-
+		
 		__copy_end__ = . ;
 	} >INTRAM3_DTCM
 	__copy_loadaddr__ = LOADADDR(.data) ;

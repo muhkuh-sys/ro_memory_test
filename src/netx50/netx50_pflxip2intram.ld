@@ -55,8 +55,8 @@ SECTIONS
 	{
 		/* The PRN data must be DWORD aligned. */ 
 		. = ALIGN(4);
-		*(.rodata.prn)
-
+		*(.prn_rodata)
+		
 		*(.rodata*)
 	} >PARFLASH
 

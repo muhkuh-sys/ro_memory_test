@@ -47,14 +47,12 @@ SECTIONS
 
 	.code 0x08008000 :
 	{
-		*(.init_code)
-		*(.text)
-	
+		KEEP(*(.init_code))
+		*(.text* .rodata*)
+		
 		/* The PRN data must be DWORD aligned. */ 
 		. = ALIGN(4);
-		*(.rodata.prn)
-
-		*(.rodata*)
+		*(.prn_rodata)
 	} >INTRAM
 
 	.bss :

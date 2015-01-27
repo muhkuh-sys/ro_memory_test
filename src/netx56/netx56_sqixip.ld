@@ -35,13 +35,11 @@ SECTIONS
 	.code ORIGIN(SQIROM)+0x40 :
 	{
 		KEEP(*(.init_code))
-		*(.text*)
-
+		*(.text* .rodata*)
+		
 		/* The PRN data must be DWORD aligned. */ 
 		. = ALIGN(4);
-		*(.rodata.prn)
-
-		*(.rodata*)
+		*(.prn_rodata)
 	} >SQIROM
 
 
