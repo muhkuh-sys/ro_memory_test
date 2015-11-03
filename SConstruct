@@ -169,8 +169,8 @@ env_netx50_pfl_4000k.Append(CPPPATH = aCppPath)
 prn_netx50_pfl_4000k = prn_obj(env_netx50_pfl_4000k, 4000*1024/4, 'targets/netx50_pfl_4000k/prn_.bin')
 src_netx50_pfl_4000k = env_netx50_pfl_4000k.SetBuildPath('targets/netx50_pfl_4000k', 'src', sources_common)
 elf_netx50_pfl_4000k = env_netx50_pfl_4000k.Elf('targets/netx50_pfl_4000k/rotest_4000k.elf', src_netx50_pfl_4000k + prn_netx50_pfl_4000k + platform_lib_netx50)
-bb0_netx50_pfl_4000k = env_netx50_pfl_4000k.BootBlock('targets/netx50_pfl_4000k/netx50_rotest_S29GL032N90BFI030.img', elf_netx50_pfl_4000k, BOOTBLOCK_SRC=dict({0x00:0xf8beaf16, 0x01:0x01010305}), BOOTBLOCK_DST=dict({0x07:0x01010305, 0x0e:0x00000001}))
-bb1_netx50_pfl_4000k = env_netx50_pfl_4000k.BootBlock('targets/netx50_pfl_4000k/netx50_rotest_S29GL032N90BFI030_and_S29GL032D70BFI030.img', elf_netx50_pfl_4000k, BOOTBLOCK_SRC=dict({0x00:0xf8beaf16, 0x01:0x01010306}), BOOTBLOCK_DST=dict({0x07:0x01010306, 0x0e:0x00000001}))
+bb0_netx50_pfl_4000k = env_netx50_pfl_4000k.BootBlock('targets/netx50_rotest_S29GL032N90BFI030.img', elf_netx50_pfl_4000k, BOOTBLOCK_SRC=dict({0x00:0xf8beaf16, 0x01:0x01010305}), BOOTBLOCK_DST=dict({0x07:0x01010305, 0x0e:0x00000001}))
+bb1_netx50_pfl_4000k = env_netx50_pfl_4000k.BootBlock('targets/netx50_rotest_S29GL032N90BFI030_and_S29GL032D70BFI030.img', elf_netx50_pfl_4000k, BOOTBLOCK_SRC=dict({0x00:0xf8beaf16, 0x01:0x01010306}), BOOTBLOCK_DST=dict({0x07:0x01010306, 0x0e:0x00000001}))
 
 
 #	nx500pfl_env = env_netx500.Clone()
