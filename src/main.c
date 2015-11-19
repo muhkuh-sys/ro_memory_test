@@ -189,7 +189,7 @@ void test_main(void)
 
 
 	uprintf("*** Memory RO test by cthelen@hilscher.com ***\n");
-	uprintf("V" VERSION_ALL "\n\n");
+	uprintf("V" VERSION_ALL " " VERSION_VCS "\n\n");
 
 	uprintf("This test checks a pre-defined pattern in the following area:\n");
 	uprintf(" 0x%08x - 0x%08x\n", (unsigned long)_binary_test_bin_start, (unsigned long)_binary_test_bin_end);
