@@ -19,6 +19,14 @@
 #endif
 
 
+typedef enum ENUM_CHIP_SUBTYP
+{
+	CHIP_SUBTYP_NETX50              = 0,
+	CHIP_SUBTYP_NETX51              = 1,
+	CHIP_SUBTYP_NETX52              = 2
+} CHIP_SUBTYP_T;
+
+
 #if CFG_USE_UART!=0
 #       if ASIC_TYP==10
 		/* NXHX10-ETM */
@@ -32,10 +40,19 @@
 		};
 #       elif ASIC_TYP==56
 		/* NXHX51-ETM */
-		static const UART_CONFIGURATION_T tUartCfg =
+		static const UART_CONFIGURATION_T tUartCfg_netx51 =
 		{
 			.uc_rx_mmio = 34U,
 			.uc_tx_mmio = 35U,
+			.uc_rts_mmio = 0xffU,
+			.uc_cts_mmio = 0xffU,
+			.us_baud_div = UART_BAUDRATE_DIV(UART_BAUDRATE_115200)
+		};
+
+		static const UART_CONFIGURATION_T tUartCfg_netx52 =
+		{
+			.uc_rx_mmio = 20U,
+			.uc_tx_mmio = 21U,
 			.uc_rts_mmio = 0xffU,
 			.uc_cts_mmio = 0xffU,
 			.us_baud_div = UART_BAUDRATE_DIV(UART_BAUDRATE_115200)
@@ -124,12 +141,43 @@ void test_main(void)
 	unsigned long *pulEnd;
 	unsigned long ulRead;
 	unsigned int uiTestCnt;
+#if ASIC_TYP==56
+	HOSTDEF(ptAsicCtrlArea);
+	HOSTDEF(ptMmioCtrlArea);
+	unsigned long ulValue;
+	unsigned long ulChipSubType;
+	CHIP_SUBTYP_T tChipSubTyp;
+#endif
 
 
 	systime_init();
 #if CFG_USE_UART!=0
-	uart_init(0, &tUartCfg);
-
+#       if ASIC_TYP==56
+		/* Get the chip subtype from mem_a18 and mem_a19:
+		 *  18 19
+		 *   0  0  netX50
+		 *   1  0  netX51
+		 *   0  1  netX52
+		 *   1  1  reserved
+		 */
+		ulValue = ptAsicCtrlArea->ulSample_at_nres;
+		ulChipSubType  = (ulValue&HOSTMSK(sample_at_nres_sar_mem_a18))>> HOSTSRT(sample_at_nres_sar_mem_a18);
+		ulChipSubType |= (ulValue&HOSTMSK(sample_at_nres_sar_mem_a19))>>(HOSTSRT(sample_at_nres_sar_mem_a19)-1);
+		tChipSubTyp = (CHIP_SUBTYP_T)ulChipSubType;
+		
+		/* netX51 and netX52 have different default UART pins. */
+		if( tChipSubTyp==CHIP_SUBTYP_NETX52 )
+		{
+			uart_init(IO_UART_UNIT, &tUartCfg_netx52);
+		}
+		else
+		{
+			uart_init(IO_UART_UNIT, &tUartCfg_netx51);
+		}
+#       else
+		uart_init(0, &tUartCfg);
+#       endif
+	
 	/* Set the serial vectors. */
 	memcpy(&tSerialVectors, &tSerialVectors_Uart, sizeof(SERIAL_COMM_UI_FN_T));
 #else
