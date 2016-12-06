@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<HBootImage type="REGULAR" device="INTFLASH" offset="0">
+	<Chunks>
+		<!-- Load Programm for the COM CPU and start afterwards -->
+		<XIP>
+			<File name="@tElfCOM" />
+		</XIP>
+
+		<!-- Start the APP CPU. -->
+		<StartAPP />
+
+		<Execute>
+			<File name="@tElfCOM" />
+		</Execute>
+	</Chunks>
+</HBootImage>
+

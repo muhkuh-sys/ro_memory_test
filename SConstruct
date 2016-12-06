@@ -65,7 +65,7 @@ aCppPath = ['src', '#platform/src', '#platform/src/lib', '#targets/version']
 
 sources_common = """
 	src/header.c
-	src/init_netx_test.S
+	src/init.S
 	src/main.c
 """
 
@@ -76,6 +76,11 @@ sources_netx10 = """
 
 sources_netx56 = """
 	src/usb_cdc.c
+"""
+
+
+sources_netx90_com = """
+	src/netx90/comled.c
 """
 
 env_netx10 = atEnv.NETX10.Clone()
@@ -269,3 +274,18 @@ prn_netx56_intram_256k = prn_obj(env_netx56_intram_256k, 0x00010000, 'targets/ne
 elf_netx56_intram_256k = env_netx56_intram_256k.Elf('targets/netx56_intram_256k/rotest_256k.elf', src_netx56_intram_256k + prn_netx56_intram_256k + env_netx56_intram_256k['PLATFORM_LIBRARY'])
 bb0_netx56_intram_256k = env_netx56_intram_256k.BootBlock('targets/rotest_netx56_intram_256k.img', elf_netx56_intram_256k, BOOTBLOCK_SRC='MMC', BOOTBLOCK_DST='INTRAM')
 
+
+#
+# netX90
+#
+
+env_netx90_com = atEnv.NETX90_MPW.Clone()
+env_netx90_com.Append(CPPPATH = aCppPath)
+
+env_netx90_com_iflash = env_netx90_com.Clone()
+env_netx90_com_iflash.Replace(LDFILE = 'src/netx90/netx90_com_iflash.ld')
+src_netx90_com_iflash = env_netx90_com_iflash.SetBuildPath('targets/netx90_com_iflash', 'src', sources_common + sources_netx90_com)
+prn_netx90_com_iflash = prn_obj(env_netx90_com_iflash, 0x0003f800, 'targets/netx90_com_iflash/prn_iflash01.bin')
+elf_netx90_com_iflash = env_netx90_com_iflash.Elf('targets/netx90_com_iflash/rotest_iflash01.elf', src_netx90_com_iflash + env_netx90_com_iflash['PLATFORM_LIBRARY'] + prn_netx90_com_iflash)
+env_netx90_com_iflash.HBootImage('targets/rotest_netx90_com_iflash.bin', 'src/netx90/COM_IFLASH_XIP.xml', HBOOTIMAGE_KNOWN_FILES=dict({'tElfCOM': elf_netx90_com_iflash}))
+env_netx90_com_iflash.HBootImage('targets/rotest_netx90_com_iflash_appa.bin', 'src/netx90/COM_IFLASH_XIP_ACTIVATE_APP.xml', HBOOTIMAGE_KNOWN_FILES=dict({'tElfCOM': elf_netx90_com_iflash}))

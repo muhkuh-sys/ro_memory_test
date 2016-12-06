@@ -11,6 +11,10 @@
 #include "uprintf.h"
 #include "version.h"
 
+#if ASIC_TYP==ASIC_TYP_NETX90_MPW
+#       include "netx90/comled.h"
+#endif
+
 
 #if CFG_USE_UART!=0
 #       include "uart_standalone.h"
@@ -43,7 +47,11 @@ extern unsigned long _binary_test_bin_start[];
 void test_main(void) __attribute__ ((noreturn));
 void test_main(void)
 {
+#if ASIC_TYP==ASIC_TYP_NETX90_MPW
+	COMLED_BLINKI_HANDLE_T tBlinkiHandle;
+#else
 	BLINKI_HANDLE_T tBlinkiHandle;
+#endif
 	unsigned long ulPrn_inc;
 	unsigned long ulPrn_reg;
 	unsigned long *pulCnt;
@@ -62,6 +70,10 @@ void test_main(void)
 	memcpy(&tSerialVectors, &tSerialVectors_Usb, sizeof(SERIAL_COMM_UI_FN_T));
 #endif
 
+#if ASIC_TYP==ASIC_TYP_NETX90_MPW
+	comled_initialize(0);
+	comled_initialize(1);
+#endif
 
 	uprintf("*** Memory RO test by cthelen@hilscher.com ***\n");
 	uprintf("V" VERSION_ALL " " VERSION_VCS "\n\n");
@@ -76,12 +88,20 @@ void test_main(void)
 		if( (uiTestCnt&1)==0 )
 		{
 			/* Switch the LEDs off. */
+#if ASIC_TYP==ASIC_TYP_NETX90_MPW
+			comled_setLEDs(0, COMLED_OFF);
+#else
 			rdy_run_setLEDs(RDYRUN_OFF);
+#endif
 		}
 		else
 		{
 			/* Switch the green led on. */
+#if ASIC_TYP==ASIC_TYP_NETX90_MPW
+			comled_setLEDs(0, COMLED_GREEN);
+#else
 			rdy_run_setLEDs(RDYRUN_GREEN);
+#endif
 		}
 
 		/* Loop over the complete test data. */
@@ -113,11 +133,19 @@ void test_main(void)
 
 	uprintf("Stop!\n");
 
-	rdy_run_blinki_init(&tBlinkiHandle, 0x00000055, 0x00000150);
+#if ASIC_TYP==ASIC_TYP_NETX90_MPW
+	comled_blinki_init(&tBlinkiHandle, 0, 0x00000001, 0x00000004);
+	while(1)
+	{
+		comled_blinki(&tBlinkiHandle);
+	};
+#else
+	rdy_run_blinki_init(&tBlinkiHandle, 0x00000001, 0x00000004);
 	while(1)
 	{
 		rdy_run_blinki(&tBlinkiHandle);
 	}
+#endif
 }
 
 

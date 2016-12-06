@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<HBootImage type="REGULAR" device="INTFLASH" offset="0">
+	<Chunks>
+		<!-- TODO: Add option header for the hardware configuration. -->
+
+		<!-- Load Programm for the COM CPU and start afterwards -->
+		<XIP>
+			<File name="@tElfCOM" />
+		</XIP>
+
+		<Execute>
+			<File name="@tElfCOM" />
+		</Execute>
+	</Chunks>
+</HBootImage>
+
