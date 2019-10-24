@@ -18,13 +18,12 @@ env_arm9.CreateCompilerEnv('NETX50', ['arch=armv5te'])
 env_arm9.CreateCompilerEnv('NETX10', ['arch=armv5te'])
 
 # Create a build environment for the Cortex-R7 and Cortex-A9 based netX chips.
-env_cortexR7 = atEnv.DEFAULT.CreateEnvironment(['gcc-arm-none-eabi-4.9', 'asciidoc'])
-env_cortexR7.CreateCompilerEnv('NETX4000_RELAXED', ['arch=armv7', 'thumb'], ['arch=armv7-r', 'thumb'])
+#env_cortexR7 = atEnv.DEFAULT.CreateEnvironment(['gcc-arm-none-eabi-4.9', 'asciidoc'])
+#env_cortexR7.CreateCompilerEnv('NETX4000', ['arch=armv7', 'thumb'], ['arch=armv7-r', 'thumb'])
 
 # Create a build environment for the Cortex-M4 based netX chips.
 env_cortexM4 = atEnv.DEFAULT.CreateEnvironment(['gcc-arm-none-eabi-4.9', 'asciidoc'])
-env_cortexM4.CreateCompilerEnv('NETX90_MPW', ['arch=armv7', 'thumb'], ['arch=armv7e-m', 'thumb'])
-env_cortexM4.CreateCompilerEnv('NETX90_MPW_APP', ['arch=armv7', 'thumb'], ['arch=armv7e-m', 'thumb'])
+env_cortexM4.CreateCompilerEnv('NETX90', ['arch=armv7', 'thumb'], ['arch=armv7e-m', 'thumb'])
 
 # Build the platform libraries.
 SConscript('platform/SConscript')
@@ -79,13 +78,7 @@ sources_netx56 = """
 """
 
 
-sources_netx90_com = """
-	src/netx90/comled.c
-"""
-
-sources_netx90_app = """
-	src/netx90/app_hboot_header_iflash.c
-	src/netx90/cm4_app_vector_table_iflash.c
+sources_netx90 = """
 """
 
 
@@ -285,25 +278,22 @@ bb0_netx56_intram_256k = env_netx56_intram_256k.BootBlock('targets/rotest_netx56
 # netX90
 #
 
-env_netx90_com = atEnv.NETX90_MPW.Clone()
+env_netx90_com = atEnv.NETX90.Clone()
 env_netx90_com.Append(CPPPATH = aCppPath)
 
-env_netx90_com_iflash = env_netx90_com.Clone()
-env_netx90_com_iflash.Replace(LDFILE = 'src/netx90/netx90_com_iflash.ld')
-src_netx90_com_iflash = env_netx90_com_iflash.SetBuildPath('targets/netx90_com_iflash', 'src', sources_common + sources_netx90_com)
-prn_netx90_com_iflash = prn_obj(env_netx90_com_iflash, 0x0003f800, 'targets/netx90_com_iflash/prn_iflash01.bin')
-elf_netx90_com_iflash = env_netx90_com_iflash.Elf('targets/netx90_com_iflash/rotest_iflash01.elf', src_netx90_com_iflash + env_netx90_com_iflash['PLATFORM_LIBRARY'] + prn_netx90_com_iflash)
-env_netx90_com_iflash.HBootImage('targets/rotest_netx90_com_iflash.bin', 'src/netx90/COM_IFLASH_XIP.xml', HBOOTIMAGE_KNOWN_FILES=dict({'tElfCOM': elf_netx90_com_iflash}))
-env_netx90_com_iflash.HBootImage('targets/rotest_netx90_com_iflash_appa.bin', 'src/netx90/COM_IFLASH_XIP_ACTIVATE_APP.xml', HBOOTIMAGE_KNOWN_FILES=dict({'tElfCOM': elf_netx90_com_iflash}))
+#env_netx90_com_iflash = env_netx90_com.Clone()
+#env_netx90_com_iflash.Replace(LDFILE = 'src/netx90/netx90_com_iflash.ld')
+#src_netx90_com_iflash = env_netx90_com_iflash.SetBuildPath('targets/netx90_com_iflash', 'src', sources_common + sources_netx90_com)
+#prn_netx90_com_iflash = prn_obj(env_netx90_com_iflash, 0x0003f800, 'targets/netx90_com_iflash/prn_iflash01.bin')
+#elf_netx90_com_iflash = env_netx90_com_iflash.Elf('targets/netx90_com_iflash/rotest_iflash01.elf', src_netx90_com_iflash + env_netx90_com_iflash['PLATFORM_LIBRARY'] + prn_netx90_com_iflash)
+#env_netx90_com_iflash.HBootImage('targets/rotest_netx90_com_iflash.bin', 'src/netx90/COM_IFLASH_XIP.xml', HBOOTIMAGE_KNOWN_FILES=dict({'tElfCOM': elf_netx90_com_iflash}))
+#env_netx90_com_iflash.HBootImage('targets/rotest_netx90_com_iflash_appa.bin', 'src/netx90/COM_IFLASH_XIP_ACTIVATE_APP.xml', HBOOTIMAGE_KNOWN_FILES=dict({'tElfCOM': elf_netx90_com_iflash}))
 
+env_netx90_sqixip = env_netx90_com.Clone()
+env_netx90_sqixip.Replace(LDFILE = 'src/netx90/netx90_sqixip.ld')
 
-env_netx90_app = atEnv.NETX90_MPW_APP.Clone()
-env_netx90_app.Append(CPPPATH = aCppPath)
-
-env_netx90_app_iflash = env_netx90_app.Clone()
-env_netx90_app_iflash.Replace(LDFILE = 'src/netx90/netx90_app_iflash.ld')
-src_netx90_app_iflash = env_netx90_app_iflash.SetBuildPath('targets/netx90_app_iflash', 'src', sources_common + sources_netx90_app)
-prn_netx90_app_iflash = prn_obj(env_netx90_app_iflash, 0x0001fa00, 'targets/netx90_app_iflash/prn_iflash2.bin')
-elf_netx90_app_iflash = env_netx90_app_iflash.Elf('targets/netx90_app_iflash/rotest_iflash2.elf', src_netx90_app_iflash + env_netx90_app_iflash['PLATFORM_LIBRARY'] + prn_netx90_app_iflash)
-bin_netx90_app_iflash = env_netx90_app_iflash.ObjCopy('targets/netx90_app_iflash/rotest_iflash2.bin', elf_netx90_app_iflash)
-bb0_netx90_app_iflash = env_netx90_app_iflash.IFlashImage('targets/rotest_netx90_app_iflash.bin', bin_netx90_app_iflash)
+env_netx90_sqixip_2m = env_netx90_sqixip.Clone()
+src_netx90_sqixip_2m = env_netx90_sqixip_2m.SetBuildPath('targets/netx90_sqixip_2m', 'src', sources_common + sources_netx90)
+prn_netx90_sqixip_2m = prn_obj(env_netx90_sqixip_2m, 0x00080000, 'targets/netx90_sqixip_2m/prn_2m.bin')
+elf_netx90_sqixip_2m = env_netx90_sqixip_2m.Elf('targets/netx90_sqixip/rotest_2m.elf', src_netx90_sqixip_2m + env_netx90_sqixip_2m['PLATFORM_LIBRARY'] + prn_netx90_sqixip_2m)
+env_netx90_sqixip_2m.HBootImage('targets/rotest_netx90_com_sqixip_2m.bin', 'src/netx90/COM_SQI_XIP.xml', HBOOTIMAGE_KNOWN_FILES=dict({'tElfCOM': elf_netx90_sqixip_2m}))
