@@ -297,3 +297,7 @@ src_netx90_sqixip_2m = env_netx90_sqixip_2m.SetBuildPath('targets/netx90_sqixip_
 prn_netx90_sqixip_2m = prn_obj(env_netx90_sqixip_2m, 0x00080000, 'targets/netx90_sqixip_2m/prn_2m.bin')
 elf_netx90_sqixip_2m = env_netx90_sqixip_2m.Elf('targets/netx90_sqixip/rotest_2m.elf', src_netx90_sqixip_2m + env_netx90_sqixip_2m['PLATFORM_LIBRARY'] + prn_netx90_sqixip_2m)
 env_netx90_sqixip_2m.HBootImage('targets/rotest_netx90_com_sqixip_2m.bin', 'src/netx90/COM_SQI_XIP.xml', HBOOTIMAGE_KNOWN_FILES=dict({'tElfCOM': elf_netx90_sqixip_2m}))
+env_netx90_sqixip_2m.HBootImage('targets/rotest_netx90_com_sqixip_2m_100MHz.bin', 'src/netx90/COM_SQI_XIP_100MHz.xml', HBOOTIMAGE_KNOWN_FILES=dict({'tElfCOM': elf_netx90_sqixip_2m}))
+env_netx90_sqixip_2m.HBootImage('targets/rotest_netx90_com_sqixip_2m_133MHz.bin', 'src/netx90/COM_SQI_XIP_133MHz.xml', HBOOTIMAGE_KNOWN_FILES=dict({'tElfCOM': elf_netx90_sqixip_2m}))
+env_netx90_sqixip_2m.HBootImage('targets/rotest_netx90_com_sqixip_2m_80MHz.bin', 'src/netx90/COM_SQI_XIP_80MHz.xml', HBOOTIMAGE_KNOWN_FILES=dict({'tElfCOM': elf_netx90_sqixip_2m}))
+env_netx90_sqixip_2m.HBootImage('targets/rotest_netx90_com_sqixip_2m_66MHz.bin', 'src/netx90/COM_SQI_XIP_66MHz.xml', HBOOTIMAGE_KNOWN_FILES=dict({'tElfCOM': elf_netx90_sqixip_2m}))
